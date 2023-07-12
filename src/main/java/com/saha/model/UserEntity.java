@@ -4,7 +4,9 @@ import com.saha.rest.model.User;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -22,6 +24,9 @@ public class UserEntity {
     @Column(name = "lastname")
     @Length(min=2, max=255)
     private String lastName;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "userEntity")
+    private CalendarEntity calendarEntity;
 
     public UserEntity(){
     }
@@ -56,6 +61,14 @@ public class UserEntity {
         this.lastName = lastName;
     }
 
+    public CalendarEntity getCalendarEntity() {
+        return calendarEntity;
+    }
+
+    public void setCalendarEntity(CalendarEntity calendarEntity) {
+        this.calendarEntity = calendarEntity;
+    }
+
     public User toDTO() {
         User user = new User();
         user.setId(this.getId());
@@ -67,5 +80,8 @@ public class UserEntity {
     public void fromDTO(User user) {
         this.setFirstName(user.getFirstName());
         this.setLastName(user.getLastName());
+        CalendarEntity calendarEntity = new CalendarEntity();
+        this.setCalendarEntity(calendarEntity);
+        calendarEntity.setUserEntity(this);
     }
 }
