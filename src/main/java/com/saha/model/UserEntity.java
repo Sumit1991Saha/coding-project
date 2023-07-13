@@ -25,7 +25,7 @@ public class UserEntity {
     @Length(min=2, max=255)
     private String lastName;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "userEntity")
     private CalendarEntity calendarEntity;
 
     public UserEntity(){
@@ -82,5 +82,6 @@ public class UserEntity {
         this.setLastName(user.getLastName());
         CalendarEntity calendarEntity = new CalendarEntity();
         this.setCalendarEntity(calendarEntity);
+        calendarEntity.setUserEntity(this);
     }
 }

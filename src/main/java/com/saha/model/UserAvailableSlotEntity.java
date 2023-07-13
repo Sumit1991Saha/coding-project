@@ -84,8 +84,10 @@ public class UserAvailableSlotEntity {
         return userAvailabilitySlot;
     }
 
-    public void fromDTO(UserAvailabilitySlot userAvailabilitySlot, UserEntity userEntity) throws ParseException {
-        this.setCalendarEntity(userEntity.getCalendarEntity());
+    public void fromDTO(UserAvailabilitySlot userAvailabilitySlot, long calendarId) throws ParseException {
+        CalendarEntity calendarEntity = new CalendarEntity();
+        calendarEntity.setId(calendarId);
+        this.setCalendarEntity(calendarEntity);
         this.setStartTime(DateFormat.getInstance().parse(userAvailabilitySlot.getStartTime()));
         this.setEndTime(DateFormat.getInstance().parse(userAvailabilitySlot.getEndTime()));
     }

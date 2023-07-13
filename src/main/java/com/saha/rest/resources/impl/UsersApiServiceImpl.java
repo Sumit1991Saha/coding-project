@@ -11,6 +11,7 @@ import com.saha.rest.model.UserAvailabilitySlot;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.saha.rest.resources.NotFoundException;
 
 import java.io.InputStream;
@@ -24,6 +25,7 @@ import javax.persistence.EntityTransaction;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.validation.constraints.*;
+
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJerseyServerCodegen", date = "2023-07-12T20:23:11.968+05:30[Asia/Kolkata]")
 public class UsersApiServiceImpl extends UsersApiService {
     private EntityManager em;
@@ -39,6 +41,7 @@ public class UsersApiServiceImpl extends UsersApiService {
         availableSlotCrudService = new CrudService<>(UserAvailableSlotEntity.class, em);
         schemaName = "openapi";
     }
+
     @Override
     public Response createUser(User user, SecurityContext securityContext) throws NotFoundException {
         UserEntity userEntity = new UserEntity();
@@ -47,7 +50,7 @@ public class UsersApiServiceImpl extends UsersApiService {
             tx.begin();
             userCrudService.create(userEntity);
             long userId = userCrudService.getNextSequenceId(UserEntity.class, schemaName, em);
-            if (userId !=0) {
+            if (userId != 0) {
                 user.setId(userId);
             }
             tx.commit();
@@ -57,6 +60,7 @@ public class UsersApiServiceImpl extends UsersApiService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     @Override
     public Response deleteUser(Long userId, SecurityContext securityContext) throws NotFoundException {
         try {
@@ -69,6 +73,7 @@ public class UsersApiServiceImpl extends UsersApiService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     @Override
     public Response getUser(Long userId, SecurityContext securityContext) throws NotFoundException {
         UserEntity user = null;
@@ -85,6 +90,7 @@ public class UsersApiServiceImpl extends UsersApiService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     @Override
     public Response getUsers(SecurityContext securityContext) throws NotFoundException {
         List<UserEntity> userEntities = new ArrayList<>();
@@ -99,6 +105,7 @@ public class UsersApiServiceImpl extends UsersApiService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     @Override
     public Response updateUser(Long userId, User user, SecurityContext securityContext) throws NotFoundException {
         UserEntity userEntity = null;
@@ -122,18 +129,20 @@ public class UsersApiServiceImpl extends UsersApiService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     @Override
     public Response createUserAvailabilitySlot(Long userId, UserAvailabilitySlot userAvailabilitySlot, SecurityContext securityContext) throws NotFoundException {
         UserAvailableSlotEntity availableSlotEntity = new UserAvailableSlotEntity();
         try {
             tx.begin();
             UserEntity userEntity = userCrudService.findById(userId);
+            long calendarId = userEntity.getCalendarEntity().getId();
             tx.commit();
             //Adding a check so that availability slot can only be set for the corresponding user's calendar only not in any other's calendar
             if (userEntity.getCalendarEntity().getId() != userAvailabilitySlot.getCalendarId()) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
-            availableSlotEntity.fromDTO(userAvailabilitySlot, userEntity);
+            availableSlotEntity.fromDTO(userAvailabilitySlot, calendarId);
             tx.begin();
             availableSlotCrudService.create(availableSlotEntity);
             tx.commit();
@@ -150,9 +159,10 @@ public class UsersApiServiceImpl extends UsersApiService {
             tx.begin();
             UserEntity userEntity = userCrudService.findById(userId);
             long calendarId = userEntity.getCalendarEntity().getId();
-            List<UserAvailableSlotEntity> userAvailableSlotEntities = availableSlotCrudService.findByCalendarId(calendarId);
+            List<UserAvailableSlotEntity> userAvailableSlotEntities = availableSlotCrudService.findAll();
             tx.commit();
             List<UserAvailabilitySlot> userAvailabilitySlots = userAvailableSlotEntities.stream()
+                    .filter(entity -> entity.getCalendarEntity().getId() == calendarId)
                     .map(entity -> entity.toDTO())
                     .collect(Collectors.toList());
             return Response.ok().entity(userAvailabilitySlots).build();

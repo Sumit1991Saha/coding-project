@@ -12,6 +12,10 @@ public class CalendarEntity {
     @Column(name = "id")
     private Long id;
 
+    @JoinColumn(name = "user_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    private UserEntity userEntity;
+
     public Long getId() {
         return id;
     }
@@ -19,16 +23,25 @@ public class CalendarEntity {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public UserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CalendarEntity that = (CalendarEntity) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(id, that.id) && Objects.equals(userEntity, that.userEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, userEntity);
     }
 }
