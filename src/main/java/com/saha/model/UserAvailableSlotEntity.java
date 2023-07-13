@@ -8,7 +8,10 @@ import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.ParseException;
 import java.text.ParsePosition;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 @Entity
@@ -88,7 +91,9 @@ public class UserAvailableSlotEntity {
         CalendarEntity calendarEntity = new CalendarEntity();
         calendarEntity.setId(calendarId);
         this.setCalendarEntity(calendarEntity);
-        this.setStartTime(DateFormat.getInstance().parse(userAvailabilitySlot.getStartTime()));
-        this.setEndTime(DateFormat.getInstance().parse(userAvailabilitySlot.getEndTime()));
+        Date startDate = DateFormat.getInstance().parse(userAvailabilitySlot.getStartTime());
+        Date endDate = DateFormat.getInstance().parse(userAvailabilitySlot.getEndTime());
+        this.setStartTime(startDate);
+        this.setEndTime(endDate);
     }
 }

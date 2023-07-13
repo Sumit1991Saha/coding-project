@@ -9,7 +9,9 @@ import com.saha.rest.model.*;
 import com.saha.rest.model.User;
 import com.saha.rest.model.UserAvailabilitySlot;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.saha.rest.resources.NotFoundException;
@@ -64,10 +66,18 @@ public class UsersApiServiceImpl extends UsersApiService {
     @Override
     public Response deleteUser(Long userId, SecurityContext securityContext) throws NotFoundException {
         try {
+            UserEntity user = null;
             tx.begin();
-            userCrudService.removeById(userId);
+            user = userCrudService.findById(userId);
             tx.commit();
-            return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "Deletion successful!")).build();
+            if (user != null) {
+                tx.begin();
+                userCrudService.removeById(userId);
+                tx.commit();
+                return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "Deletion successful!")).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
         } catch (Exception e) {
             tx.rollback();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -134,16 +144,26 @@ public class UsersApiServiceImpl extends UsersApiService {
     public Response createUserAvailabilitySlot(Long userId, UserAvailabilitySlot userAvailabilitySlot, SecurityContext securityContext) throws NotFoundException {
         UserAvailableSlotEntity availableSlotEntity = new UserAvailableSlotEntity();
         try {
+
             tx.begin();
             UserEntity userEntity = userCrudService.findById(userId);
-            long calendarId = userEntity.getCalendarEntity().getId();
             tx.commit();
+            if (userEntity == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            Date startDate = DateFormat.getInstance().parse(userAvailabilitySlot.getStartTime());
+            Date endDate = DateFormat.getInstance().parse(userAvailabilitySlot.getEndTime());
+            if (startDate.after(endDate)) {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
             //Adding a check so that availability slot can only be set for the corresponding user's calendar only not in any other's calendar
             if (userEntity.getCalendarEntity().getId() != userAvailabilitySlot.getCalendarId()) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
-            availableSlotEntity.fromDTO(userAvailabilitySlot, calendarId);
+
             tx.begin();
+            long calendarId = userEntity.getCalendarEntity().getId();
+            availableSlotEntity.fromDTO(userAvailabilitySlot, calendarId);
             availableSlotCrudService.create(availableSlotEntity);
             tx.commit();
             return Response.ok().entity(availableSlotEntity).build();
@@ -158,13 +178,19 @@ public class UsersApiServiceImpl extends UsersApiService {
         try {
             tx.begin();
             UserEntity userEntity = userCrudService.findById(userId);
+            tx.commit();
+            if (userEntity == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            tx.begin();
             long calendarId = userEntity.getCalendarEntity().getId();
             List<UserAvailableSlotEntity> userAvailableSlotEntities = availableSlotCrudService.findAll();
-            tx.commit();
             List<UserAvailabilitySlot> userAvailabilitySlots = userAvailableSlotEntities.stream()
                     .filter(entity -> entity.getCalendarEntity().getId() == calendarId)
                     .map(entity -> entity.toDTO())
                     .collect(Collectors.toList());
+            tx.commit();
             return Response.ok().entity(userAvailabilitySlots).build();
         } catch (Exception e) {
             tx.rollback();
