@@ -1,6 +1,7 @@
 package com.saha.model;
 
 import javax.persistence.*;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @Entity
@@ -13,10 +14,10 @@ public class MeetingEntity {
     private Long id;
 
     @Column(name = "start_time")
-    private Date startTime;
+    private OffsetDateTime startTime;
 
     @Column(name = "end_time")
-    private Date endTime;
+    private OffsetDateTime endTime;
 
     @ManyToMany
     @JoinTable(name = "calendar_meeting_mapping",
@@ -32,19 +33,19 @@ public class MeetingEntity {
         this.id = id;
     }
 
-    public Date getStartTime() {
+    public OffsetDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(OffsetDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public OffsetDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(OffsetDateTime endTime) {
         this.endTime = endTime;
     }
 

@@ -277,10 +277,12 @@ components:
         startTime:
           description: The date in the following format :- DD/MM/YYYY HH:MM
           type: string
+          format: date-time
           example: "01/01/2019 12:00"
         endTime:
           description: The date in the following format :- DD/MM/YYYY HH:MM
           type: string
+          format: date-time
           example: "01/01/2019 15:00"
       required:
         - calendarId

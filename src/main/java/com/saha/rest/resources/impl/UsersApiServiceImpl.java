@@ -10,6 +10,8 @@ import com.saha.rest.model.User;
 import com.saha.rest.model.UserAvailabilitySlot;
 
 import java.text.DateFormat;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -151,9 +153,10 @@ public class UsersApiServiceImpl extends UsersApiService {
             if (userEntity == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
-            Date startDate = DateFormat.getInstance().parse(userAvailabilitySlot.getStartTime());
-            Date endDate = DateFormat.getInstance().parse(userAvailabilitySlot.getEndTime());
-            if (startDate.after(endDate)) {
+            userAvailabilitySlot = updateOffset(userAvailabilitySlot);
+            OffsetDateTime startDateTime = userAvailabilitySlot.getStartTime();
+            OffsetDateTime endDatetime = userAvailabilitySlot.getEndTime();
+            if (startDateTime.compareTo(endDatetime) > 1) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
             //Adding a check so that availability slot can only be set for the corresponding user's calendar only not in any other's calendar
@@ -171,6 +174,17 @@ public class UsersApiServiceImpl extends UsersApiService {
             tx.rollback();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    private UserAvailabilitySlot updateOffset(UserAvailabilitySlot userAvailabilitySlot) {
+        ZoneOffset zoneOffset = ZoneOffset.ofHoursMinutes(5, 30);
+        OffsetDateTime startDateTime = userAvailabilitySlot.getStartTime();
+        OffsetDateTime updateStartDateTime = startDateTime.withOffsetSameLocal(zoneOffset).plusHours(5).plusMinutes(30);
+        OffsetDateTime endDatetime = userAvailabilitySlot.getEndTime();
+        OffsetDateTime updatedEndDatetime = endDatetime.withOffsetSameLocal(zoneOffset).plusHours(5).plusMinutes(30);;
+        userAvailabilitySlot.setStartTime(updateStartDateTime);
+        userAvailabilitySlot.setEndTime(updatedEndDatetime);
+        return userAvailabilitySlot;
     }
 
     @Override

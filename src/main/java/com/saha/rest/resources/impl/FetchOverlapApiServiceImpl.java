@@ -8,6 +8,7 @@ import com.saha.rest.model.*;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 import com.saha.rest.model.User;
@@ -78,19 +79,9 @@ public class FetchOverlapApiServiceImpl extends FetchOverlapApiService {
             Comparator<UserAvailabilitySlot> comparator = new Comparator<UserAvailabilitySlot>() {
                 @Override
                 public int compare(UserAvailabilitySlot slot1, UserAvailabilitySlot slot2) {
-                    try {
-                        Date startTimeSlot1 = DateFormat.getInstance().parse(slot1.getStartTime());
-                        Date startTimeSlot2 = DateFormat.getInstance().parse(slot2.getStartTime());
-                        if (startTimeSlot1.equals(startTimeSlot2)) {
-                            return 0;
-                        } else if(startTimeSlot1.before(startTimeSlot2)) {
-                            return -1;
-                        } else {
-                            return 1;
-                        }
-                    } catch (ParseException e) {
-                        throw new RuntimeException(e);
-                    }
+                    OffsetDateTime startTimeSlot1 = slot1.getStartTime();
+                    OffsetDateTime startTimeSlot2 = slot2.getStartTime();
+                    return startTimeSlot1.compareTo(startTimeSlot2);
                 }
             };
             for (Map.Entry<User, List<UserAvailabilitySlot>> userVsAvailableSlot : userVsAvailableSlots.entrySet()) {

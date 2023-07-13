@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.time.OffsetDateTime;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 
@@ -34,10 +35,10 @@ public class UserAvailabilitySlot   {
   private Long calendarId;
 
   @JsonProperty("startTime")
-  private String startTime;
+  private OffsetDateTime startTime;
 
   @JsonProperty("endTime")
-  private String endTime;
+  private OffsetDateTime endTime;
 
   public UserAvailabilitySlot id(Long id) {
     this.id = id;
@@ -79,7 +80,7 @@ public class UserAvailabilitySlot   {
     this.calendarId = calendarId;
   }
 
-  public UserAvailabilitySlot startTime(String startTime) {
+  public UserAvailabilitySlot startTime(OffsetDateTime startTime) {
     this.startTime = startTime;
     return this;
   }
@@ -89,17 +90,17 @@ public class UserAvailabilitySlot   {
    * @return startTime
    **/
   @JsonProperty("startTime")
-  @ApiModelProperty(example = "01/01/2019 12:00", required = true, value = "The date in the following format :- DD/MM/YYYY HH:MM")
+  @ApiModelProperty(required = true, value = "The date in the following format :- DD/MM/YYYY HH:MM")
   @NotNull 
-  public String getStartTime() {
+  public OffsetDateTime getStartTime() {
     return startTime;
   }
 
-  public void setStartTime(String startTime) {
+  public void setStartTime(OffsetDateTime startTime) {
     this.startTime = startTime;
   }
 
-  public UserAvailabilitySlot endTime(String endTime) {
+  public UserAvailabilitySlot endTime(OffsetDateTime endTime) {
     this.endTime = endTime;
     return this;
   }
@@ -109,13 +110,13 @@ public class UserAvailabilitySlot   {
    * @return endTime
    **/
   @JsonProperty("endTime")
-  @ApiModelProperty(example = "01/01/2019 15:00", required = true, value = "The date in the following format :- DD/MM/YYYY HH:MM")
+  @ApiModelProperty(required = true, value = "The date in the following format :- DD/MM/YYYY HH:MM")
   @NotNull 
-  public String getEndTime() {
+  public OffsetDateTime getEndTime() {
     return endTime;
   }
 
-  public void setEndTime(String endTime) {
+  public void setEndTime(OffsetDateTime endTime) {
     this.endTime = endTime;
   }
 

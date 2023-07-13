@@ -9,6 +9,7 @@ import java.text.FieldPosition;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
@@ -28,10 +29,10 @@ public class UserAvailableSlotEntity {
     private CalendarEntity calendarEntity;
 
     @Column(name = "start_time")
-    private Date startTime;
+    private OffsetDateTime startTime;
 
     @Column(name = "end_time")
-    private Date endTime;
+    private OffsetDateTime endTime;
 
     public Long getId() {
         return id;
@@ -49,19 +50,19 @@ public class UserAvailableSlotEntity {
         this.calendarEntity = calendarEntity;
     }
 
-    public Date getStartTime() {
+    public OffsetDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(OffsetDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public OffsetDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(OffsetDateTime endTime) {
         this.endTime = endTime;
     }
 
@@ -82,8 +83,8 @@ public class UserAvailableSlotEntity {
         UserAvailabilitySlot userAvailabilitySlot = new UserAvailabilitySlot();
         userAvailabilitySlot.setId(this.getId());
         userAvailabilitySlot.setCalendarId(this.getCalendarEntity().getId());
-        userAvailabilitySlot.setStartTime(this.getStartTime().toString());
-        userAvailabilitySlot.setEndTime(this.getEndTime().toString());
+        userAvailabilitySlot.setStartTime(this.getStartTime());
+        userAvailabilitySlot.setEndTime(this.getEndTime());
         return userAvailabilitySlot;
     }
 
@@ -91,9 +92,7 @@ public class UserAvailableSlotEntity {
         CalendarEntity calendarEntity = new CalendarEntity();
         calendarEntity.setId(calendarId);
         this.setCalendarEntity(calendarEntity);
-        Date startDate = DateFormat.getInstance().parse(userAvailabilitySlot.getStartTime());
-        Date endDate = DateFormat.getInstance().parse(userAvailabilitySlot.getEndTime());
-        this.setStartTime(startDate);
-        this.setEndTime(endDate);
+        this.setStartTime(userAvailabilitySlot.getStartTime());
+        this.setEndTime(userAvailabilitySlot.getEndTime());
     }
 }
