@@ -7,9 +7,9 @@ import com.saha.rest.resources.factories.FetchOverlapApiServiceFactory;
 import io.swagger.annotations.ApiParam;
 import io.swagger.jaxrs.*;
 
+import com.saha.rest.model.AvailabilitySlot;
 import java.util.List;
 import com.saha.rest.model.User;
-import com.saha.rest.model.UserAvailabilitySlot;
 
 import java.util.Map;
 import java.util.List;
@@ -61,9 +61,9 @@ public class FetchOverlapApi  {
     
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "fetch user availability overlap", notes = "fetch user availability overlap.", response = UserAvailabilitySlot.class, responseContainer = "List", tags={ "user-availability-overlap", })
+    @io.swagger.annotations.ApiOperation(value = "fetch user availability overlap", notes = "fetch user availability overlap.", response = AvailabilitySlot.class, responseContainer = "List", tags={ "user-availability-overlap", })
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "Fetched Successfully", response = UserAvailabilitySlot.class, responseContainer = "List"),
+        @io.swagger.annotations.ApiResponse(code = 200, message = "Fetched Successfully", response = AvailabilitySlot.class, responseContainer = "List"),
         
         @io.swagger.annotations.ApiResponse(code = 400, message = "Bad Request", response = Void.class),
         

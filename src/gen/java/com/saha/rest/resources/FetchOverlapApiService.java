@@ -5,9 +5,9 @@ import com.saha.rest.model.*;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
+import com.saha.rest.model.AvailabilitySlot;
 import java.util.List;
 import com.saha.rest.model.User;
-import com.saha.rest.model.UserAvailabilitySlot;
 
 import java.util.List;
 import com.saha.rest.resources.NotFoundException;

@@ -213,7 +213,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserAvailabilitySlots'
+                $ref: '#/components/schemas/AvailabilitySlots'
         '400':
           description: Bad Request
         '401':
@@ -278,20 +278,45 @@ components:
           description: The date in the following format :- DD/MM/YYYY HH:MM
           type: string
           format: date-time
-          example: "01/01/2019 12:00"
+          example: "01/01/2019 12:00:00+05:30"
         endTime:
           description: The date in the following format :- DD/MM/YYYY HH:MM
           type: string
           format: date-time
-          example: "01/01/2019 15:00"
+          example: "01/01/2019 15:00:00+05:30"
       required:
         - calendarId
         - startTime
         - endTime
       example:
         calendarId: 1
-        firstName: "01/01/2019 12:00"
-        lastName: "01/01/2019 15:00"
+        firstName: "01/01/2019 12:00:00+05:30"
+        lastName: "01/01/2019 15:00:00+05:30"
+
+    AvailabilitySlots:
+      type: array
+      items:
+        $ref: '#/components/schemas/AvailabilitySlot'
+    AvailabilitySlot:
+      description: "Availability Slot definition among all the given users"
+      type: object
+      properties:
+        startTime:
+          description: The date in the following format :- DD/MM/YYYY HH:MM
+          type: string
+          format: date-time
+          example: "01/01/2019 12:00:00+05:30"
+        endTime:
+          description: The date in the following format :- DD/MM/YYYY HH:MM
+          type: string
+          format: date-time
+          example: "01/01/2019 15:00:00+05:30"
+      required:
+        - startTime
+        - endTime
+      example:
+        firstName: "01/01/2019 12:00:00+05:30"
+        lastName: "01/01/2019 15:00:00+05:30"
 
   parameters:
     userId:
