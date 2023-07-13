@@ -55,48 +55,86 @@ public class FetchOverlapApiServiceImpl extends FetchOverlapApiService {
             List<UserEntity> userEntities = userCrudService.findAll();
             tx.commit();
 
-            Map<Long, User> calendarIdVsUser = new HashMap<>();
+            Set<Long> validCalendarIds = new HashSet<>();
             for (UserEntity entity : userEntities) {
                 if (userIds.contains(entity.getId())) {
-                    calendarIdVsUser.put(entity.getCalendarEntity().getId(), entity.toDTO());
+                    validCalendarIds.add(entity.getCalendarEntity().getId());
                 }
             }
 
-            Map<User, List<UserAvailabilitySlot>> userVsAvailableSlots = new HashMap<>();
+            List<UserAvailabilitySlot> userAvailabilitySlots = new ArrayList<>();
             tx.begin();
             List<UserAvailableSlotEntity> availableSlotEntities = availableSlotCrudService.findAll();
             for (UserAvailableSlotEntity entity : availableSlotEntities) {
                 long calendarId = entity.getCalendarEntity().getId();
-                User user = calendarIdVsUser.get(calendarId);
-                if (userVsAvailableSlots.containsKey(user)) {
-                    userVsAvailableSlots.get(user).add(entity.toDTO());
-                } else {
-                    userVsAvailableSlots.put(user, new ArrayList<UserAvailabilitySlot>() {{
-                        add(entity.toDTO());
-                    }});
+                if (validCalendarIds.contains(calendarId)) {
+                    userAvailabilitySlots.add(entity.toDTO());
                 }
-            }
-            Comparator<UserAvailabilitySlot> comparator = new Comparator<UserAvailabilitySlot>() {
-                @Override
-                public int compare(UserAvailabilitySlot slot1, UserAvailabilitySlot slot2) {
-                    OffsetDateTime startTimeSlot1 = slot1.getStartTime();
-                    OffsetDateTime startTimeSlot2 = slot2.getStartTime();
-                    return startTimeSlot1.compareTo(startTimeSlot2);
-                }
-            };
-            for (Map.Entry<User, List<UserAvailabilitySlot>> userVsAvailableSlot : userVsAvailableSlots.entrySet()) {
-                Collections.sort(userVsAvailableSlot.getValue(), comparator);
             }
             tx.commit();
-            computeOverLap(userVsAvailableSlots);
-            return Response.ok("calendarIds").build();
+            int numberOfUsers = validCalendarIds.size();
+            List<AvailabilitySlot> availabilitySlots = computeOverLap(userAvailabilitySlots, numberOfUsers);
+            return Response.ok(availabilitySlots).build();
         } catch (Exception e) {
             tx.rollback();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    private void computeOverLap(Map<User, List<UserAvailabilitySlot>> userVsAvailableSlots) {
+    private List<AvailabilitySlot> computeOverLap(List<UserAvailabilitySlot> userAvailabilitySlots, int numberOfUsers) {
+        List<Pair> timeSlots = new ArrayList<>(2*userAvailabilitySlots.size());
+        for (UserAvailabilitySlot slot : userAvailabilitySlots) {
+            Pair startTuple = new Pair(slot.getStartTime(), "S");
+            Pair endTuple = new Pair(slot.getEndTime(), "E");
+            timeSlots.add(startTuple);
+            timeSlots.add(endTuple);
+        }
 
+        Comparator<Pair> comparator = new Comparator<Pair>() {
+            @Override
+            public int compare(Pair tuple1, Pair tuple2) {
+                return tuple1.getDateTime().compareTo(tuple2.getDateTime());
+            }
+        };
+        Collections.sort(timeSlots, comparator);
+
+        List<AvailabilitySlot> overlapSlots = new ArrayList<>();
+        int counter = 0;
+        for (int i =0; i < timeSlots.size(); ++i) {
+            Pair timeSlot = timeSlots.get(i);
+            if (timeSlot.startOrEndNotation.equals("S")) {
+                counter++;
+            } else if (timeSlot.startOrEndNotation.equals("E")) {
+                counter--;
+            }
+            if (counter == numberOfUsers) {
+                AvailabilitySlot availableOverlapSlot = new AvailabilitySlot();
+                availableOverlapSlot.setStartTime(timeSlot.getDateTime());
+                i++;
+                timeSlot = timeSlots.get(i);
+                availableOverlapSlot.setEndTime(timeSlot.getDateTime());
+                counter--;
+                overlapSlots.add(availableOverlapSlot);
+            }
+        }
+        return overlapSlots;
+    }
+
+    class Pair {
+        OffsetDateTime dateTime;
+        String startOrEndNotation; // Value for this is either S or E ie for Start and End
+
+        Pair(OffsetDateTime dateTime, String startOrEndNotation) {
+            this.dateTime = dateTime;
+            this.startOrEndNotation = startOrEndNotation;
+        }
+
+        public OffsetDateTime getDateTime() {
+            return dateTime;
+        }
+
+        public String getStartOrEndNotation() {
+            return startOrEndNotation;
+        }
     }
 }
