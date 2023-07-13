@@ -36,3 +36,6 @@ Please fork this repository and reach out to Prakash when finished.
 ## Next Steps
 
 After submission, we will conduct a 30 to 60 minute code review in person. We will ask you about your thinking and design choices.
+
+To run the server :-
+mvn clean package jetty:run
