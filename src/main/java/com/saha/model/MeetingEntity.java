@@ -18,7 +18,7 @@ public class MeetingEntity {
     @Column(name = "end_time")
     private Date endTime;
 
-    @ManyToOne
+    @ManyToMany
     @JoinTable(name = "calendar_meeting_mapping",
             joinColumns = @JoinColumn(name = "meeting_id"),
             inverseJoinColumns = @JoinColumn(name = "calendar_id"))
@@ -46,6 +46,14 @@ public class MeetingEntity {
 
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    public List<CalendarEntity> getCalendarEntities() {
+        return calendarEntities;
+    }
+
+    public void setCalendarEntities(List<CalendarEntity> calendarEntities) {
+        this.calendarEntities = calendarEntities;
     }
 
     @Override

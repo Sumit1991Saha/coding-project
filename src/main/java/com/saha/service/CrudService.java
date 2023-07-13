@@ -74,6 +74,14 @@ public class CrudService<T> {
         return (T) em.find(entityClass, id);
     }
 
+    public List<T> findByCalendarId(long id) {
+        String queryString = "select e from " + entityClass.getSimpleName() + " e where e.calendar_id=" + id;
+        List<T> results = (List<T>) em
+                .createQuery(queryString, entityClass)
+                .getResultList();
+        return results;
+    }
+
     public List<T> findAll() {
         String queryString = "select e from " + entityClass.getSimpleName() + " e";
         List<T> results = (List<T>) em

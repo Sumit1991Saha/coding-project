@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.jaxrs.*;
 
 import com.saha.rest.model.User;
+import com.saha.rest.model.UserAvailabilitySlot;
 
 import java.util.Map;
 import java.util.List;
@@ -30,7 +31,7 @@ import javax.validation.Valid;
 
 
 @io.swagger.annotations.Api(description = "the users API")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJerseyServerCodegen", date = "2023-07-11T01:03:51.209+05:30[Asia/Kolkata]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJerseyServerCodegen", date = "2023-07-12T20:23:11.968+05:30[Asia/Kolkata]")
 public class UsersApi  {
    private final UsersApiService delegate;
 
@@ -75,6 +76,27 @@ public class UsersApi  {
     throws NotFoundException {
         return delegate.createUser(user, securityContext);
     }
+    @POST
+    @Path("/{user-id}/availability")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    @io.swagger.annotations.ApiOperation(value = "Create a new availability for a given user", notes = "Creates a new availability for a given user and returns the id.", response = UserAvailabilitySlot.class, tags={ "user-availability", })
+    @io.swagger.annotations.ApiResponses(value = { 
+        @io.swagger.annotations.ApiResponse(code = 201, message = "Created successfully", response = UserAvailabilitySlot.class),
+        
+        @io.swagger.annotations.ApiResponse(code = 400, message = "Bad Request", response = Void.class),
+        
+        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Forbidden", response = Void.class),
+        
+        @io.swagger.annotations.ApiResponse(code = 409, message = "Conflict.", response = Void.class) })
+    public Response createUserAvailabilitySlot(@ApiParam(value = "ID for user id which needs to be operated on.",required=true) @PathParam("user-id") Long userId
+,@ApiParam(value = "" ) @Valid UserAvailabilitySlot userAvailabilitySlot
+,@Context SecurityContext securityContext)
+    throws NotFoundException {
+        return delegate.createUserAvailabilitySlot(userId, userAvailabilitySlot, securityContext);
+    }
     @DELETE
     @Path("/{user-id}")
     
@@ -114,6 +136,26 @@ public class UsersApi  {
 ,@Context SecurityContext securityContext)
     throws NotFoundException {
         return delegate.getUser(userId, securityContext);
+    }
+    @GET
+    @Path("/{user-id}/availability")
+    
+    @Produces({ "application/json" })
+    @io.swagger.annotations.ApiOperation(value = "Returns a list of the given user's availability.", notes = "Returns list of all the availability slots for a given user. <br> ", response = UserAvailabilitySlot.class, responseContainer = "List", tags={ "user-availability", })
+    @io.swagger.annotations.ApiResponses(value = { 
+        @io.swagger.annotations.ApiResponse(code = 200, message = "Fetched successfully", response = UserAvailabilitySlot.class, responseContainer = "List"),
+        
+        @io.swagger.annotations.ApiResponse(code = 400, message = "Bad Request", response = Void.class),
+        
+        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        
+        @io.swagger.annotations.ApiResponse(code = 403, message = "Forbidden", response = Void.class),
+        
+        @io.swagger.annotations.ApiResponse(code = 404, message = "Not Found", response = Void.class) })
+    public Response getUserAvailabilitySlots(@ApiParam(value = "ID for user id which needs to be operated on.",required=true) @PathParam("user-id") Long userId
+,@Context SecurityContext securityContext)
+    throws NotFoundException {
+        return delegate.getUserAvailabilitySlots(userId, securityContext);
     }
     @GET
     
