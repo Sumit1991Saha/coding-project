@@ -156,7 +156,7 @@ public class UsersApiServiceImpl extends UsersApiService {
             userAvailabilitySlot = updateOffset(userAvailabilitySlot);
             OffsetDateTime startDateTime = userAvailabilitySlot.getStartTime();
             OffsetDateTime endDatetime = userAvailabilitySlot.getEndTime();
-            if (startDateTime.compareTo(endDatetime) > 1) {
+            if (startDateTime.compareTo(endDatetime) > 0) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
             //Adding a check so that availability slot can only be set for the corresponding user's calendar only not in any other's calendar

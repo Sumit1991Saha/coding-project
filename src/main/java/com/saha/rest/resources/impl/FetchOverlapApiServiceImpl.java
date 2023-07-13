@@ -88,10 +88,15 @@ public class FetchOverlapApiServiceImpl extends FetchOverlapApiService {
                 Collections.sort(userVsAvailableSlot.getValue(), comparator);
             }
             tx.commit();
+            computeOverLap(userVsAvailableSlots);
             return Response.ok("calendarIds").build();
         } catch (Exception e) {
             tx.rollback();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    private void computeOverLap(Map<User, List<UserAvailabilitySlot>> userVsAvailableSlots) {
+
     }
 }
