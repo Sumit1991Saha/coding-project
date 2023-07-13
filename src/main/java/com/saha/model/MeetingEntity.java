@@ -14,10 +14,10 @@ public class MeetingEntity {
     private Long id;
 
     @Column(name = "start_time")
-    private OffsetDateTime startTime;
+    private String startTime;
 
     @Column(name = "end_time")
-    private OffsetDateTime endTime;
+    private String endTime;
 
     @ManyToMany
     @JoinTable(name = "calendar_meeting_mapping",
@@ -33,19 +33,19 @@ public class MeetingEntity {
         this.id = id;
     }
 
-    public OffsetDateTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(OffsetDateTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public OffsetDateTime getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(OffsetDateTime endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 

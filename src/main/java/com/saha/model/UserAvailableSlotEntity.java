@@ -29,10 +29,10 @@ public class UserAvailableSlotEntity {
     private CalendarEntity calendarEntity;
 
     @Column(name = "start_time")
-    private OffsetDateTime startTime;
+    private String startTime;
 
     @Column(name = "end_time")
-    private OffsetDateTime endTime;
+    private String endTime;
 
     public Long getId() {
         return id;
@@ -50,19 +50,19 @@ public class UserAvailableSlotEntity {
         this.calendarEntity = calendarEntity;
     }
 
-    public OffsetDateTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(OffsetDateTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public OffsetDateTime getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(OffsetDateTime endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 
@@ -83,8 +83,8 @@ public class UserAvailableSlotEntity {
         UserAvailabilitySlot userAvailabilitySlot = new UserAvailabilitySlot();
         userAvailabilitySlot.setId(this.getId());
         userAvailabilitySlot.setCalendarId(this.getCalendarEntity().getId());
-        userAvailabilitySlot.setStartTime(this.getStartTime());
-        userAvailabilitySlot.setEndTime(this.getEndTime());
+        userAvailabilitySlot.setStartTime(OffsetDateTime.parse(this.getStartTime()));
+        userAvailabilitySlot.setEndTime(OffsetDateTime.parse(this.getEndTime()));
         return userAvailabilitySlot;
     }
 
@@ -92,7 +92,7 @@ public class UserAvailableSlotEntity {
         CalendarEntity calendarEntity = new CalendarEntity();
         calendarEntity.setId(calendarId);
         this.setCalendarEntity(calendarEntity);
-        this.setStartTime(userAvailabilitySlot.getStartTime());
-        this.setEndTime(userAvailabilitySlot.getEndTime());
+        this.setStartTime(userAvailabilitySlot.getStartTime().toString());
+        this.setEndTime(userAvailabilitySlot.getEndTime().toString());
     }
 }

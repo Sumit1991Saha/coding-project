@@ -26,16 +26,16 @@ create table calendar (
 create table available_slot (
     id bigint not null auto_increment,
     calendar_id bigint not null,
-    start_time tinyblob not null,
-    end_time tinyblob not null,
+    start_time varchar(100) not null,
+    end_time varchar(100) not null,
     primary key (id),
     foreign key (calendar_id) references calendar (id)
 )engine=InnoDB;
 
 create table meeting (
     id bigint not null auto_increment,
-    start_time tinyblob not null,
-    end_time tinyblob not null,
+    start_time varchar(100) not null,
+    end_time varchar(100) not null,
     primary key (id)
 )engine=InnoDB;
 
